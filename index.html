@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>RC카</title>
+    <script src="blockly_compressed.js"></script>
+    <script src="blocks_compressed.js"></script>
+    <script src="javascript_compressed.js"></script>
+    <script src="msg/ko.js"></script>
+    <script src="block.js"></script>
+    <script src="theme.js"></script>
+    <link href="css.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <h1>RC카</h1>
+    <div id="blocklyDiv" style="height: 600px; width: 800px; float: left;"></div>
+    <xml id="toolbox" style="display: none">
+        <category name="기본 블록" colour="#5C81A6">
+            <block type="controls_repeat">
+                <value name="TIMES">
+                    <shadow type="math_number">
+                        <field name="NUM">5</field>
+                    </shadow>
+                </value>
+                <statement name="DO">
+                    <block type="math_arithmetic">
+                        <field name="OP">ADD</field>
+                        <value name="A">
+                            <block type="variables_get">
+                                <field name="VAR">item</field>
+                            </block>
+                        </value>
+                        <value name="B">
+                            <block type="math_number">
+                                <field name="NUM">1</field>
+                            </block>
+                        </value>
+                    </block>
+                </statement>
+            </block>
+        </category>
+        <category name="RC카 블록" colour="#FF7F27">
+            <block type="cfront"></block>
+            <block type="cback"></block>
+            <block type="crot"></block>
+            <block type="crot2"></block>
+            <block type="ccolor"></block>
+        </category>
+    </xml>
+    <div>
+        <div id="sim">
+            <button onclick="runCode()" class="startbtn">코드 실행</button>
+            <div id="outputContainer">
+                <label>자바스크립트 코드</label>
+                <div id="outputbox">
+                    <pre id="output"></pre>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+        var workspace = Blockly.inject('blocklyDiv', {
+            toolbox: document.getElementById('toolbox'),
+            trashcan: true
+        });
+
+        function runCode() {
+            var code = Blockly.JavaScript.workspaceToCode(workspace);
+            document.getElementById('output').textContent = code;
+
+            try {
+                eval(code);
+            } catch (error) {
+                console.error("에러 코드:", error);
+                alert("에러 코드:" + error);
+            }
+        }
+    </script>
+</body>
+
+</html>
