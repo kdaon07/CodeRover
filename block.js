@@ -15,9 +15,10 @@ Blockly.Blocks['cfront'] = {
 
 Blockly.JavaScript['cfront'] = function (block) {
     var distance = block.getFieldValue('거리');
-
+    var simul = '';
     var code = '';
     code += '  console.log("앞으로" + ' + distance + ' + "만큼");\n';
+    simul += ''
     return code;
 };
 

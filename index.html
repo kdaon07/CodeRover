@@ -8,12 +8,32 @@
     <script src="javascript_compressed.js"></script>
     <script src="msg/ko.js"></script>
     <script src="block.js"></script>
-    <script src="theme.js"></script>
     <link href="css.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
     <h1>RC카</h1>
+    <div>
+        <div id="sim">
+            <div id="carsim">
+                <div id="box">
+                    <div id="car"></div>
+                </div>
+                <div class="btnbox">
+                    <button onclick="runCode()" class="startbtn">코드 실행</button>
+                    <button onclick="runCode()" class="startbtn">코드 실행</button>
+                </div>
+            </div>
+
+
+            <div id="outputContainer">
+                <label>자바스크립트 코드</label>
+                <div id="outputbox">
+                    <pre id="output"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="blocklyDiv" style="height: 600px; width: 800px; float: left;"></div>
     <xml id="toolbox" style="display: none">
         <category name="기본 블록" colour="#5C81A6">
@@ -48,19 +68,6 @@
             <block type="ccolor"></block>
         </category>
     </xml>
-    <div>
-        <div id="sim">
-            <button onclick="runCode()" class="startbtn">코드 실행</button>
-            <div id="outputContainer">
-                <label>자바스크립트 코드</label>
-                <div id="outputbox">
-                    <pre id="output"></pre>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
 
     <script>
         var workspace = Blockly.inject('blocklyDiv', {
@@ -78,6 +85,39 @@
                 console.error("에러 코드:", error);
                 alert("에러 코드:" + error);
             }
+        }
+        var car = document.getElementById('car');
+        var box = document.getElementById('box');
+
+        carX = 150;
+        carY = 150;
+        updatecar();
+
+        function walk(e){
+            switch (e) {
+                case 'w':
+                    carY -= 10;
+                    break;
+                case 'a':
+                    carX -= 10;
+                    break;
+                case 's':
+                    carY += 10;
+                    break;
+                case 'd':
+                    carX += 10;
+                    break;
+            }
+
+            carX = Math.max(0, Math.min(carX, gameContainer.clientWidth - car.clientWidth));
+            carY = Math.max(0, Math.min(carY, gameContainer.clientHeight - car.clientHeight));
+
+            updatecar();
+        }
+
+        function updatecar() {
+            car.style.left = playerX + 'px';
+            car.style.top = playerY + 'px';
         }
     </script>
 </body>
