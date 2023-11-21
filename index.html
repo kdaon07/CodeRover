@@ -53,7 +53,9 @@
     <script>
         var box = document.getElementById('box');
         let goal;
-        let count;
+        var codes = [];
+        var ok = 0;
+        let count = 0;
 
         var workspace = Blockly.inject('blocklyDiv', {
             toolbox: document.getElementById('toolbox'),
@@ -66,7 +68,9 @@
 
             try {
                 reset();
+                ok = 1;
                 eval(code);
+                cdstart();
             } catch (error) {
                 console.error("에러 코드:", error);
                 alert("에러 코드:" + error);
@@ -89,10 +93,14 @@
 
         let x = 3;
         let y = 5;
-        let direction = 'right'; // 초기 방향은 오른쪽
+        let direction = 'right';
 
         function reset() {
-            mapArray.length = 0; // 배열 비우기
+            count = 0;
+            ok = 0;
+            console.log(ok);
+            codes = [];
+            mapArray.length = 0;
             mapArray.push(
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -112,6 +120,37 @@
             displayMap(mapArray);
         }
 
+        function cd(e) {
+            codes.push(e);
+        }
+
+        function cdstart() {
+            let delay = 0;
+            console.log(codes);
+            for (let i = 0; i < codes.length; i++) {
+                // console.log(codes[i]);
+                // console.log(ok);
+                if (ok == 0) return;
+                setTimeout(() => {
+                    switch (codes[i]) {
+                        case 1:
+                            walk();
+                            break;
+                        case 2:
+                            walk2();
+                            break;
+                        case 3:
+                            turnRight();
+                            break;
+                        case 4:
+                            turnLeft();
+                            break;
+                    }
+                }, delay);
+                delay += 300;
+            }
+        }
+
         function walk() {
             mapArray[y - 1][x - 1] = 0;
 
@@ -126,16 +165,10 @@
                 y += 1;
             }
             goal = mapArray[y - 1][x - 1];
+            count++;
             mapArray[y - 1][x - 1] = 2;
-
+            console.log(goal);
             displayMap(mapArray);
-            if (goal == 3) {
-                setTimeout(() => {
-                    alert("통과");
-                    goal = 1;
-
-                }, 1000);
-            }
         }
 
         function walk2() {
@@ -151,18 +184,11 @@
             } else if (direction === 'down' && y > 1) {
                 y -= 1;
             }
-
+            goal = mapArray[y - 1][x - 1];
+            count++;
             mapArray[y - 1][x - 1] = 2;
 
             displayMap(mapArray);
-            if (goal == 3) {
-                setTimeout(() => {
-                    alert("통과");
-                    goal = 1;
-
-                }, 1000);
-            }
-
         }
 
         function turnRight() {
@@ -175,6 +201,7 @@
             } else if (direction === 'left') {
                 direction = 'up';
             }
+            count++;
         }
 
         function turnLeft() {
@@ -187,6 +214,7 @@
             } else if (direction === 'right') {
                 direction = 'up';
             }
+            count++;
         }
 
 
@@ -199,11 +227,18 @@
                     cell.classList.add('cell', `cell-${map[i][j]}`);
                     container.appendChild(cell);
                 }
-                container.appendChild(document.createElement('br')); // 줄 바꿈 추가
+                container.appendChild(document.createElement('br'));
             }
 
-            box.innerHTML = ''; // Clear previous content
+            box.innerHTML = '';
             box.appendChild(container);
+            if (goal == 3 && count == codes.length) {
+                setTimeout(() => {
+                    alert("통과");
+                    goal = 1;
+                    console.log("카운트 : " + count + ", " + goal);
+                }, 1000);
+            }
         }
 
 

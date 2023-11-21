@@ -15,10 +15,10 @@ Blockly.JavaScript['cfront'] = function (block) {
     var distance = 10;
     var code = '';
     code += '  console.log("앞으로" + ' + distance + ' + "만큼");\n';
-    code += '  walk();\n';
+    code += '  cd(1);\n';
     return code;
-  };
-  
+};
+
 
 Blockly.Blocks['cback'] = {
     init: function () {
@@ -38,7 +38,7 @@ Blockly.JavaScript['cback'] = function (block) {
 
     var code = '';
     code += '  console.log("뒤로" + ' + distance + ' + "만큼");\n';
-    code += '  walk2();\n';
+    code += '  cd(2);\n';
     return code;
 };
 
@@ -61,7 +61,7 @@ Blockly.JavaScript['crot'] = function (block) {
 
     var code = '';
     code += '  console.log(' + angle + ' + "만큼 회전");\n';
-    code += '  turnLeft();\n';
+    code += '  cd(4);\n';
     return code;
 };
 
@@ -83,7 +83,7 @@ Blockly.JavaScript['crot2'] = function (block) {
 
     var code = '';
     code += '  console.log(' + angle + ' + "만큼 회전");\n';
-    code += '  turnRight();\n'
+    code += '  cd(3);\n';
     return code;
 };
 
