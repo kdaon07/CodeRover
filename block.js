@@ -1,9 +1,7 @@
 Blockly.Blocks['cfront'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("앞으로")
-            .appendField(new Blockly.FieldTextInput("0"), "거리")
-            .appendField("만큼 이동");
+            .appendField("앞으로 이동");
         this.setInputsInline(false);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
@@ -14,20 +12,18 @@ Blockly.Blocks['cfront'] = {
 };
 
 Blockly.JavaScript['cfront'] = function (block) {
-    var distance = block.getFieldValue('거리');
-    var simul = '';
+    var distance = 10;
     var code = '';
     code += '  console.log("앞으로" + ' + distance + ' + "만큼");\n';
-    simul += ''
+    code += '  walk();\n';
     return code;
-};
+  };
+  
 
 Blockly.Blocks['cback'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("뒤로")
-            .appendField(new Blockly.FieldTextInput("0"), "거리")
-            .appendField("만큼 이동");
+            .appendField("뒤로 이동");
         this.setInputsInline(false);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
@@ -38,10 +34,11 @@ Blockly.Blocks['cback'] = {
 };
 
 Blockly.JavaScript['cback'] = function (block) {
-    var distance = block.getFieldValue('거리');
+    var distance = 10
 
     var code = '';
     code += '  console.log("뒤로" + ' + distance + ' + "만큼");\n';
+    code += '  walk2();\n';
     return code;
 };
 
@@ -64,6 +61,7 @@ Blockly.JavaScript['crot'] = function (block) {
 
     var code = '';
     code += '  console.log(' + angle + ' + "만큼 회전");\n';
+    code += '  turnLeft();\n';
     return code;
 };
 
@@ -85,6 +83,7 @@ Blockly.JavaScript['crot2'] = function (block) {
 
     var code = '';
     code += '  console.log(' + angle + ' + "만큼 회전");\n';
+    code += '  turnRight();\n'
     return code;
 };
 
