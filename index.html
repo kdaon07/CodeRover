@@ -10,7 +10,9 @@
     <script src="block.js"></script>
     <link href="css.css" rel="stylesheet" type="text/css">
     <style>
-        #box {position: relative;}
+        #box {
+            position: relative;
+        }
     </style>
 </head>
 
@@ -55,6 +57,11 @@
         var ok = 0;
         let count = 0;
         let Angle = 0;
+        var repeat = 1;
+        var rl = 0;
+        var rbool = 0;
+        var dbcode = '';
+        var cnt = 0;
 
         var workspace = Blockly.inject('blocklyDiv', {
             toolbox: document.getElementById('toolbox'),
@@ -70,10 +77,55 @@
                 ok = 1;
                 eval(code);
                 cdstart();
+                savecode(0, "last");
             } catch (error) {
                 console.error("에러 코드:", error);
                 alert("에러 코드:" + error);
             }
+        }
+        function savecode(e, cd, state) {
+            if (e == 0) {
+                // db로 보내는거
+                if (dbcode.length != 0) {
+                    console.log("반복 횟수" + repeat + " 코드 " + dbcode);
+                    join(repeat, dbcode);
+                }
+                rl = 0;
+                rbool = 0;
+                repeat = 1;
+                dbcode = '';
+            } else if (cd == "rlast" && rl == 0) {
+                rl = 1;
+                rbool = 0;
+            } else if (e == 1 && rl == 0) {
+                if (isNaN(cd)) {
+                    dbcode += cd;
+                } else {
+                    repeat = cd;
+                    rbool = 1;
+                }
+            }
+        }
+
+        function join(r, cd) {
+            cnt += 1;
+            console.log("DB 넣기");
+            // let formData = new FormData();
+            // formData.append("order", cnt);
+            // formData.append("repeat", r);
+            // formData.append("code", cd);
+
+            // // fetch('/join', { method: "POST", body: formData }).then((res) => res.json()).then((data) => {
+            // //     console.log(data["msg"]);
+            // });
+        }
+
+        function resetdb() {
+            cnt = 0;
+            console.log("DB초기화");
+            // fetch('/reset', { method: "POST" }).then((res) => res.json()).then((data) => {
+            //     console.log(data["msg"]);
+            // });
         }
 
         const mapArray = [
@@ -95,6 +147,12 @@
         let direction = 'right';
 
         function reset() {
+            resetdb();
+            cnt = 0;
+            rl = 0;
+            rbool = 0;
+            repeat = 1;
+            dbcode = '';
             Angle = 0;
             count = 0;
             ok = 0;
@@ -239,7 +297,7 @@
                 }, 1000);
             }
             if (goal == 4) {
-                goal=1;
+                goal = 1;
                 alert("실패");
                 reset();
             }
