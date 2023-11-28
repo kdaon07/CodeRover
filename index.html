@@ -21,8 +21,11 @@
     <div>
         <div id="sim">
             <div id="carsim">
-                <div id="box">
+                <div id="box" style="float: left;">
                     <div id="path" class="path"></div>
+                </div>
+                <div>
+                    <h3 style="float: right;" id="ab">0 / 4</h3>
                 </div>
             </div>
             <div class="btnbox">
@@ -51,6 +54,7 @@
         </category>
     </xml>
     <script>
+        var con = document.getElementById('ab');
         var box = document.getElementById('box');
         let goal;
         var codes = [];
@@ -62,16 +66,49 @@
         var rbool = 0;
         var dbcode = '';
         var cnt = 0;
+        var level = 1;
+        var max = 5;
+        var block = 0;
+        const mapArray = [
+            [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 4, 4, 1, 4, 4, 4, 1, 1, 4, 1],
+            [1, 4, 4, 1, 1, 1, 4, 1, 1, 4, 3],
+            [1, 1, 1, 1, 1, 4, 4, 1, 1, 4, 4],
+            [1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1],
+            [1, 4, 1, 1, 4, 1, 4, 1, 1, 1, 4],
+            [1, 4, 1, 1, 1, 1, 1, 1, 4, 1, 1],
+            [4, 4, 1, 1, 1, 4, 1, 1, 1, 1, 1],
+            [1, 4, 1, 4, 1, 4, 1, 1, 4, 1, 1],
+            [1, 1, 1, 4, 4, 4, 1, 4, 4, 1, 4],
+            [1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1]
+        ];
 
         var workspace = Blockly.inject('blocklyDiv', {
             toolbox: document.getElementById('toolbox'),
             trashcan: true
         });
+        workspace.addChangeListener(function (event) {
+            if (event.type == Blockly.Events.CREATE && event.ids) {
+                block += event.ids.length;
+                con.innerHTML = block + " / " + max;
+                if (block > max) con.style.color = "red";
+                else con.style.color = "black";
+            }
+            else if (event.type == Blockly.Events.DELETE && event.oldXml) {
+                block -= event.ids.length;
+                con.innerHTML = block + " / " + max;
+                if (block > max) con.style.color = "red";
+                else con.style.color = "black";
+            }
+        });
 
         function runCode() {
             var code = Blockly.JavaScript.workspaceToCode(workspace);
             document.getElementById('output').textContent = code;
-
+            if(block > max) {
+                alert("블록 갯수 초과");
+                return;
+            }
             try {
                 reset();
                 ok = 1;
@@ -128,20 +165,6 @@
             // });
         }
 
-        const mapArray = [
-            [2, 1, 4, 1, 1, 1, 4, 1, 1, 1, 1],
-            [1, 4, 4, 1, 4, 4, 4, 1, 1, 4, 1],
-            [1, 4, 4, 1, 1, 1, 4, 1, 1, 4, 3],
-            [1, 1, 1, 1, 1, 4, 4, 1, 1, 4, 4],
-            [1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1],
-            [1, 4, 1, 1, 4, 1, 4, 1, 1, 1, 4],
-            [1, 4, 1, 1, 1, 1, 1, 1, 4, 1, 1],
-            [4, 4, 1, 1, 1, 4, 1, 1, 1, 1, 1],
-            [1, 4, 1, 4, 1, 4, 1, 1, 4, 1, 1],
-            [1, 1, 1, 4, 4, 4, 1, 4, 4, 1, 4],
-            [1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1]
-        ];
-
         let x = 1;
         let y = 1;
         let direction = 'right';
@@ -159,21 +182,71 @@
             console.log(ok);
             codes = [];
             mapArray.length = 0;
-            mapArray.push(
-                [2, 1, 4, 1, 1, 1, 4, 1, 1, 1, 1],
-                [1, 4, 4, 1, 4, 4, 4, 1, 1, 4, 1],
-                [1, 4, 4, 1, 1, 1, 4, 1, 1, 4, 3],
-                [1, 1, 1, 1, 1, 4, 4, 1, 1, 4, 4],
-                [1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1],
-                [1, 4, 1, 1, 4, 1, 4, 1, 1, 1, 4],
-                [1, 4, 1, 1, 1, 1, 1, 1, 4, 1, 1],
-                [4, 4, 1, 1, 1, 4, 1, 1, 1, 1, 1],
-                [1, 4, 1, 4, 1, 4, 1, 1, 4, 1, 1],
-                [1, 1, 1, 4, 4, 4, 1, 4, 4, 1, 4],
-                [1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1]
-            );
-            x = 1;
-            y = 1;
+            switch (level) {
+                case 1:
+                    mapArray.push(
+                        [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [1, 4, 4, 1, 4, 4, 4, 1, 1, 4, 1],
+                        [1, 4, 4, 1, 1, 1, 4, 1, 1, 4, 3],
+                        [1, 1, 1, 1, 1, 4, 4, 1, 1, 4, 4],
+                        [1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1],
+                        [1, 4, 1, 1, 4, 1, 4, 1, 1, 1, 4],
+                        [1, 4, 1, 1, 1, 1, 1, 1, 4, 1, 1],
+                        [4, 4, 1, 1, 1, 4, 1, 1, 1, 1, 1],
+                        [1, 4, 1, 4, 1, 4, 1, 1, 4, 1, 1],
+                        [1, 1, 1, 4, 4, 4, 1, 4, 4, 1, 4],
+                        [1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1]
+                    );
+                    max = 5;
+                    con.innerHTML = block + " / " + max;
+                    if (block > max) con.style.color = "red";
+                    else con.style.color = "black";
+                    x = 1;
+                    y = 1;
+                    break;
+                case 2:
+                    mapArray.push(
+                        [1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 1],
+                        [1, 4, 4, 1, 4, 4, 4, 1, 1, 4, 1],
+                        [1, 4, 4, 1, 1, 1, 4, 1, 1, 4, 2],
+                        [1, 1, 1, 1, 1, 4, 4, 1, 1, 4, 1],
+                        [1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1],
+                        [1, 4, 1, 1, 4, 1, 4, 1, 1, 1, 1],
+                        [1, 4, 1, 1, 1, 1, 1, 1, 4, 1, 1],
+                        [4, 4, 1, 1, 1, 4, 1, 1, 1, 1, 1],
+                        [1, 4, 1, 4, 1, 4, 1, 1, 4, 1, 1],
+                        [1, 1, 1, 4, 4, 4, 1, 4, 4, 1, 1],
+                        [1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 3]
+                    );
+                    max = 3;
+                    con.innerHTML = block + " / " + max;
+                    if (block > max) con.style.color = "red";
+                    else con.style.color = "black";
+                    x = 11;
+                    y = 3;
+                    break;
+                case 3:
+                    mapArray.push(
+                        [1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 1],
+                        [1, 4, 4, 1, 4, 4, 4, 1, 1, 4, 1],
+                        [1, 4, 4, 1, 1, 1, 4, 1, 1, 4, 1],
+                        [1, 1, 1, 1, 1, 4, 4, 1, 1, 4, 4],
+                        [1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1],
+                        [1, 4, 1, 1, 4, 1, 4, 1, 1, 1, 4],
+                        [1, 4, 1, 1, 1, 1, 1, 1, 4, 1, 1],
+                        [4, 4, 1, 1, 1, 4, 1, 1, 1, 1, 1],
+                        [3, 4, 1, 4, 1, 4, 1, 1, 4, 1, 1],
+                        [1, 1, 1, 4, 4, 4, 1, 4, 4, 1, 4],
+                        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2]
+                    );
+                    max = 7;
+                    con.innerHTML = block + " / " + max;
+                    if (block > max) con.style.color = "red";
+                    else con.style.color = "black";
+                    x = 11;
+                    y = 11;
+                    break;
+            }
             direction = 'right';
             displayMap(mapArray);
         }
@@ -294,6 +367,10 @@
                     alert("통과");
                     goal = 1;
                     console.log("카운트 : " + count + ", " + goal);
+                    level = level + 1;
+                    if (level == 4)
+                        level = 1;
+                    reset()
                 }, 1000);
             }
             if (goal == 4) {
