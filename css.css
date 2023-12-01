@@ -58,8 +58,8 @@
 }
 
 .cell {
-    width: 30.4px;
-    height: 30.4px;
+    width: 68.8px;
+    height: 68.8px;
     display: inline-block;
     margin: 1;
     padding: 0;
@@ -81,11 +81,15 @@
 .cell-2 {
     background-color: red;
     background-image: url(./image/car.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .cell-3 {
     background-color: yellow;
     background-image: url(./image/goal.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .cell-4 {
