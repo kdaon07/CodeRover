@@ -1,3 +1,7 @@
+#box {
+    position: relative;
+}
+
 #sim {
     position: relative;
     float: left;
