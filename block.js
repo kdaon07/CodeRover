@@ -90,24 +90,3 @@ Blockly.JavaScript['crot2'] = function (block) {
     code += '  savecode(1, "r");'
     return code;
 };
-
-Blockly.Blocks['ccolor'] = {
-    init: function () {
-        this.appendDummyInput()
-            .appendField("LED")
-            .appendField(new Blockly.FieldColour("#ff0000"), "color")
-            .appendField("만큼 변경");
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("");
-    }
-};
-
-Blockly.JavaScript['ccolor'] = function (block) {
-    var color = block.getFieldValue('color');
-    var code = '';
-    code += '  console.log("색상을 ' + color + ' 만큼 변경");\n';
-    return code;
-};

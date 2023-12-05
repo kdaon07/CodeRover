@@ -25,7 +25,7 @@
                     <div id="path" class="path"></div>
                 </div>
                 <div>
-                    <h3 style="float: right;" id="ab">0 / 4</h3>
+                    <h3 style="float: right;" id="ab">0 / 8</h3>
                 </div>
             </div>
             <div class="btnbox">
@@ -50,7 +50,6 @@
             <block type="cback"></block>
             <block type="crot"></block>
             <block type="crot2"></block>
-            <block type="ccolor"></block>
         </category>
     </xml>
     <script>
@@ -69,6 +68,7 @@
         var level = 1;
         var max = 8;
         var block = 0;
+        var dbs = [[], []];
         const mapArray = [
             [2, 1, 1, 4, 1],
             [4, 4, 1, 4, 1],
@@ -121,7 +121,10 @@
                 // db로 보내는거
                 if (dbcode.length != 0) {
                     console.log("반복 횟수" + repeat + " 코드 " + dbcode);
-                    join(repeat, dbcode);
+                    cnt += 1;
+                    dbs[[cnt], [1]] = repeat;
+                    dbs[[cnt], [2]] = dbcode;
+                    console.log(dbs[[cnt], [1]] + ' ' + dbs[[cnt], [2]]);
                 }
                 rl = 0;
                 rbool = 0;
@@ -140,25 +143,26 @@
             }
         }
 
-        function join(r, cd) {
-            cnt += 1;
+        function join(e) {
             console.log("DB 넣기");
-            // let formData = new FormData();
-            // formData.append("order", cnt);
-            // formData.append("repeat", r);
-            // formData.append("code", cd);
+            for (let i = 1; i <= e; i++) {
+                let formData = new FormData();
+                formData.append("order", i);
+                formData.append("repeat", dbs[[i], [1]]);
+                formData.append("code", dbs[[i], [2]]);
 
-            // // fetch('/join', { method: "POST", body: formData }).then((res) => res.json()).then((data) => {
-            // //     console.log(data["msg"]);
-            // });
+                fetch('/join', { method: "POST", body: formData }).then((res) => res.json()).then((data) => {
+                    console.log(data["msg"]);
+                });
+            }
         }
 
         function resetdb() {
             cnt = 0;
             console.log("DB초기화");
-            // fetch('/reset', { method: "POST" }).then((res) => res.json()).then((data) => {
-            //     console.log(data["msg"]);
-            // });
+            fetch('/reset', { method: "POST" }).then((res) => res.json()).then((data) => {
+                console.log(data["msg"]);
+            });
         }
 
         let x = 4;
@@ -167,6 +171,7 @@
 
         function reset() {
             resetdb();
+            dbs = [[], []];
             cnt = 0;
             rl = 0;
             rbool = 0;
@@ -271,12 +276,19 @@
                 y -= 1;
             else if (direction === 'down' && y < mapArray.length)
                 y += 1;
+            else {
+                goal = 1;
+                alert("실패");
+                reset();
+            }
+
             goal = mapArray[y - 1][x - 1];
             count++;
             mapArray[y - 1][x - 1] = 2;
             console.log(goal);
             displayMap(mapArray);
             turn(0);
+
         }
 
         function walk2() {
@@ -291,6 +303,11 @@
                 y += 1;
             else if (direction === 'down' && y > 1)
                 y -= 1;
+            else {
+                goal = 1;
+                alert("실패");
+                reset();
+            }
             goal = mapArray[y - 1][x - 1];
             count++;
             mapArray[y - 1][x - 1] = 2;
@@ -343,6 +360,7 @@
             if (goal == 3 && count == codes.length) {
                 setTimeout(() => {
                     alert("통과");
+                    join(cnt);
                     goal = 1;
                     console.log("카운트 : " + count + ", " + goal);
                     level = level + 1;
