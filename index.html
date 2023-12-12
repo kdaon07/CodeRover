@@ -3,19 +3,19 @@
 
 <head>
     <title>RC카</title>
-    <script src="blockly_compressed.js"></script>
-    <script src="blocks_compressed.js"></script>
-    <script src="javascript_compressed.js"></script>
-    <script src="msg/ko.js"></script>
-    <script src="block.js"></script>
-    <link href="css.css" rel="stylesheet" type="text/css">
+    <script src="../static/blockly_compressed.js"></script>
+    <script src="../static/blocks_compressed.js"></script>
+    <script src="../static/javascript_compressed.js"></script>
+    <script src="../static/msg/ko.js"></script>
+    <script src="../static/block.js"></script>
+    <link href="../static/css.css" rel="stylesheet" type="text/css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poor+Story&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <h2 class="main">RC카 블록코딩</h2>
+    <h1 class="main">RC카 블록코딩</h1>
     <div>
         <div id="sim">
             <div id="carsim">
@@ -69,7 +69,7 @@
         var level = 1;
         var max = 8;
         var block = 0;
-        var dbs = [[], []];
+        var dbs = [];
         var maxlv = 1;
         const mapArray = [
             [2, 1, 1, 4, 1],
@@ -124,9 +124,8 @@
                 if (dbcode.length != 0) {
                     console.log("반복 횟수" + repeat + " 코드 " + dbcode);
                     cnt += 1;
-                    dbs[[cnt], [1]] = repeat;
-                    dbs[[cnt], [2]] = dbcode;
-                    console.log(dbs[[cnt], [1]] + ' ' + dbs[[cnt], [2]]);
+                    dbs[cnt] = [repeat, dbcode];
+                    console.log(dbs[cnt][0] + ' ' + dbs[cnt][1]);
                 }
                 rl = 0;
                 rbool = 0;
@@ -147,15 +146,21 @@
 
         function join(e) {
             console.log("DB 넣기");
-            for (let i = 1; i <= e; i++) {
-                let formData = new FormData();
-                formData.append("order", i);
-                formData.append("repeat", dbs[[i], [1]]);
-                formData.append("code", dbs[[i], [2]]);
+            let formData = new FormData();
+            formData.append("order", e);
+            formData.append("repeat", dbs[e][0]);
+            formData.append("code", dbs[e][1]);
+            console.log(dbs[e][0] + ' ' + dbs[e][1]);
 
-                fetch('/join', { method: "POST", body: formData }).then((res) => res.json()).then((data) => {
+            fetch('/join', { method: "POST", body: formData })
+                .then((res) => res.json())
+                .then((data) => {
                     console.log(data["msg"]);
                 });
+            e++;
+
+            if (cnt >= e) {
+                setTimeout(() => join(e), 100);
             }
         }
 
@@ -196,7 +201,7 @@
 
         function reset() {
             resetdb();
-            dbs = [[], []];
+            dbs = [];
             cnt = 0;
             rl = 0;
             rbool = 0;
@@ -383,15 +388,15 @@
             box.innerHTML = '';
             box.appendChild(container);
             if (goal == 3 && count == codes.length) {
+                join(1);
                 setTimeout(() => {
                     alert("통과");
-                    join(cnt);
                     goal = 1;
                     console.log("카운트 : " + count + ", " + goal);
                     level = level + 1;
                     if (level == 4)
                         level = 1;
-                    if(level > maxlv)
+                    if (level > maxlv)
                         maxlv = level;
                     if (maxlv == 2)
                         document.getElementById("s2").classList.remove("lock");
@@ -417,7 +422,4 @@
             });
         }
     </script>
-
 </body>
-
-</html>
